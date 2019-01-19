@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: io.swagger.test.TasksApiControllerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.759 sec - in io.swagger.test.TasksApiControllerTest
