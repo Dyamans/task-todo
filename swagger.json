@@ -1,0 +1,378 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is an example implementation of API for testing candidates\n - You DON'T need to implement `/integrationTest` and `/status` endpoints\n- You can run automated integration tests against your API using `/integrationTest` endpoint",
+    "version" : "1.0",
+    "title" : "Auto & General test API"
+  },
+  "basePath" : "/test/1.0/",
+  "tags" : [ {
+    "name" : "tasks",
+    "description" : "General algorithmic tasks"
+  }, {
+    "name" : "todo",
+    "description" : "To Do List endpoints"
+  }, {
+    "name" : "test",
+    "description" : "Integration test"
+  }, {
+    "name" : "misc",
+    "description" : ""
+  } ],
+  "paths" : {
+    "/tasks/validateBrackets" : {
+      "get" : {
+        "tags" : [ "tasks" ],
+        "summary" : "Checks if brackets in a string are balanced",
+        "description" : "Brackets in a string are considered to be balanced if the following criteria are met:\n- For every opening bracket (i.e., **`(`**, **`{`**, or **`[`**), there is a matching closing bracket (i.e., **`)`**, **`}`**, or **`]`**) of the same type (i.e., **`(`** matches **`)`**, **`{`** matches **`}`**, and **`[`** matches **`]`**). An opening bracket must appear before (to the left of) its matching closing bracket. For example, **`]{}[`** is not balanced.\n- No unmatched braces lie between some pair of matched bracket. For example, **`({[]})`** is balanced, but **`{[}]`** and **`[{)]`** are not balanced.",
+        "schemes" : [ "http", "https" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "input",
+          "in" : "query",
+          "description" : "Input string (max length 100)",
+          "required" : true,
+          "type" : "string",
+          "maxLength" : 100,
+          "minLength" : 1
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/BalanceTestResult"
+            }
+          },
+          "400" : {
+            "description" : "Validation error",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItemValidationError"
+            }
+          }
+        }
+      }
+    },
+    "/todo" : {
+      "post" : {
+        "tags" : [ "todo" ],
+        "summary" : "Create a to do item",
+        "schemes" : [ "http", "https" ],
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ToDoItemAddRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItem"
+            }
+          },
+          "400" : {
+            "description" : "Validation error",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItemValidationError"
+            }
+          }
+        }
+      }
+    },
+    "/todo/{id}" : {
+      "get" : {
+        "tags" : [ "todo" ],
+        "summary" : "Retrieve a specific item by id",
+        "schemes" : [ "http", "https" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id",
+          "required" : true,
+          "type" : "number"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItem"
+            }
+          },
+          "400" : {
+            "description" : "Validation error",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItemValidationError"
+            }
+          },
+          "404" : {
+            "description" : "Not Found Error",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItemNotFoundError"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "todo" ],
+        "summary" : "Modify an item",
+        "schemes" : [ "http", "https" ],
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id",
+          "required" : true,
+          "type" : "number"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ToDoItemUpdateRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItem"
+            }
+          },
+          "400" : {
+            "description" : "Validation error",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItemValidationError"
+            }
+          },
+          "404" : {
+            "description" : "Not Found Error",
+            "schema" : {
+              "$ref" : "#/definitions/ToDoItemNotFoundError"
+            }
+          }
+        }
+      }
+    },
+    "/integrationTest" : {
+      "get" : {
+        "tags" : [ "test" ],
+        "summary" : "Run integration tests against remote API",
+        "schemes" : [ "http", "https" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "url",
+          "in" : "query",
+          "description" : "base url of remote API to test",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/IntegrationTestResult"
+            }
+          }
+        }
+      }
+    },
+    "/status" : {
+      "get" : {
+        "tags" : [ "misc" ],
+        "summary" : "Return system's status",
+        "schemes" : [ "http", "https" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/StatusResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "BalanceTestResult" : {
+      "type" : "object",
+      "properties" : {
+        "input" : {
+          "type" : "string",
+          "example" : "[(]"
+        },
+        "isBalanced" : {
+          "type" : "boolean",
+          "example" : false
+        }
+      }
+    },
+    "ToDoItem" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "number",
+          "example" : 42.0
+        },
+        "text" : {
+          "type" : "string",
+          "example" : "Uulwi ifis halahs gag erh'ongg w'ssh."
+        },
+        "isCompleted" : {
+          "type" : "boolean",
+          "example" : false
+        },
+        "createdAt" : {
+          "type" : "string",
+          "example" : "2017-10-13T01:50:58.735Z"
+        }
+      }
+    },
+    "ToDoItemValidationError" : {
+      "type" : "object",
+      "properties" : {
+        "details" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ToDoItemValidationError_details"
+          }
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "ValidationError"
+        }
+      }
+    },
+    "ToDoItemNotFoundError" : {
+      "type" : "object",
+      "properties" : {
+        "details" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ToDoItemNotFoundError_details"
+          }
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "NotFoundError"
+        }
+      }
+    },
+    "ToDoItemAddRequest" : {
+      "type" : "object",
+      "properties" : {
+        "text" : {
+          "type" : "string",
+          "example" : "Uulwi ifis halahs gag erh'ongg w'ssh.",
+          "minLength" : 1,
+          "maxLength" : 50
+        }
+      }
+    },
+    "ToDoItemUpdateRequest" : {
+      "type" : "object",
+      "properties" : {
+        "text" : {
+          "type" : "string",
+          "example" : "Uulwi ifis halahs gag erh'ongg w'ssh.",
+          "minLength" : 1,
+          "maxLength" : 50
+        },
+        "isCompleted" : {
+          "type" : "boolean",
+          "example" : true
+        }
+      }
+    },
+    "BracersTestResult" : {
+      "type" : "object",
+      "properties" : {
+        "input" : {
+          "type" : "string"
+        },
+        "result" : {
+          "type" : "boolean"
+        },
+        "expected" : {
+          "type" : "boolean"
+        },
+        "isCorrect" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "ToDoTestResult" : {
+      "type" : "object",
+      "properties" : {
+        "input" : {
+          "type" : "string"
+        },
+        "result" : {
+          "$ref" : "#/definitions/ToDoItem"
+        }
+      }
+    },
+    "IntegrationTestResult" : {
+      "type" : "object",
+      "properties" : {
+        "bracers" : {
+          "type" : "array",
+          "items" : {
+            "example" : ""
+          }
+        },
+        "todo" : {
+          "type" : "array",
+          "items" : {
+            "example" : ""
+          }
+        },
+        "isCorrect" : {
+          "type" : "boolean",
+          "example" : true
+        }
+      }
+    },
+    "StatusResponse" : {
+      "type" : "object",
+      "properties" : {
+        "status" : {
+          "type" : "string",
+          "example" : "healthy"
+        }
+      }
+    },
+    "ToDoItemValidationError_details" : {
+      "properties" : {
+        "location" : {
+          "type" : "string"
+        },
+        "param" : {
+          "type" : "string"
+        },
+        "msg" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      },
+      "example" : "{\"location\":\"params\",\"param\":\"text\",\"msg\":\"Must be between 1 and 50 chars long\",\"value\":\"\"}"
+    },
+    "ToDoItemNotFoundError_details" : {
+      "properties" : {
+        "message" : {
+          "type" : "string"
+        }
+      },
+      "example" : "{\"message\":\"Item with 9 not found\"}"
+    }
+  }
+}
